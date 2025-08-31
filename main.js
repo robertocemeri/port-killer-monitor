@@ -123,7 +123,7 @@ function updateMenu() {
   const items = [];
 
   if (processes.length === 0) {
-    items.push({ label: "No processes in 2000-6000", enabled: false });
+    items.push({ label: "No processes in 2000-10000", enabled: false });
   } else {
     processes.forEach(group => {
       // Deduplicate PIDs for this port
