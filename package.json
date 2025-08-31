@@ -4,35 +4,53 @@
   "description": "This app monitors and kills processes on specified ports.",
   "main": "main.js",
   "scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "start": "electron .",
-  "build:all": "electron-packager . \"Port Killer Monitor\" --platform=darwin,win32,linux --icon=./icons/app-icon --overwrite",
-  "build:ios": "electron-packager . \"Port Killer Monitor\" --platform=darwin --icon=./icons/app-icon.icns --overwrite",
-  "build:linux": "electron-packager . \"Port Killer Monitor\" --platform=linux --icon=./icons/app-icon.png --overwrite",
-  "build:windows": "electron-packager . \"Port Killer Monitor\" --platform=win32 --icon=./icons/app-icon.ico --overwrite"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "build:all": "electron-packager . \"Port Killer Monitor\" --platform=darwin,win32,linux --icon=./icons/app-icon --overwrite",
+    "build:ios": "electron-packager . \"Port Killer Monitor\" --platform=darwin --icon=./icons/app-icon.icns --overwrite",
+    "build:linux": "electron-packager . \"Port Killer Monitor\" --platform=linux --icon=./icons/app-icon.png --overwrite",
+    "build:windows": "electron-packager . \"Port Killer Monitor\" --platform=win32 --icon=./icons/app-icon.ico --overwrite",
+    "dist": "electron-builder"
   },
   "keywords": [],
-  "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "electron": "^37.4.0",
     "find-process": "^2.0.0"
   },
   "devDependencies": {
-    "electron-packager": "^17.1.2"
+  "electron-builder": "^26.0.12",
+  "electron-packager": "^17.1.2",
+  "electron": "^37.4.0"
   },
   "build": {
     "appId": "com.portkillermonitor.app",
     "productName": "Port Killer Monitor",
     "win": {
-      "icon": "build/icons/app-icon.ico"
+      "icon": "icons/app-icon.ico",
+      "target": ["nsis", "zip"]
     },
     "mac": {
-      "icon": "build/icons/app-icon.icns"
+      "icon": "icons/app-icon.icns",
+      "target": ["dmg", "zip"]
     },
     "linux": {
-      "icon": "build/icons"
-    }
+      "icon": "icons/app-icon.png",
+      "target": ["AppImage", "deb", "zip"]
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "icons/",
+      "package.json",
+      "!**/node_modules/*/{test,__tests__,tests}/**",
+      "!**/node_modules/.bin",
+      "!**/*.md"
+    ]
+  },
+  "author": {
+    "name": "Roberto Çemeri",
+    "email": "robertocemeri29@email.com"
   }
 }
