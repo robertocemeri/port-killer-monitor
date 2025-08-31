@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Port Killer</title>
+  <style>
+    /* Dark theme */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+
+    button {
+      padding: 4px 10px;
+      margin: 2px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    /* Button colors */
+    .kill-btn {
+      background-color: #e53935;
+      color: white;
+    }
+
+    .refresh-btn {
+      background-color: #1e88e5;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .kill-all-btn {
+      background-color: #fbc02d;
+      color: black;
+      margin-left: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #444;
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1e1e1e;
+      font-weight: bold;
+    }
+
+    .port-row {
+      background-color: #1e1e1e;
+      font-weight: bold;
+    }
+
+    td span {
+      margin-right: 5px;
+    }
+
+    td button {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Port Killer</h1>
+
+  <div style="text-align: center;">
+    <button class="refresh-btn" onclick="manualRefresh()">Refresh Now</button>
+    <button class="kill-all-btn" onclick="killAll()">Kill All</button>
+  </div>
+
+  <table id="procTable">
+    <thead>
+      <tr><th>Port</th><th>PIDs | Kill</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    function render(processes) {
+      if (!processes || !Array.isArray(processes)) return;
+
+      const tbody = document.querySelector('#procTable tbody');
+      tbody.innerHTML = '';
+
+      if (!processes.length) {
+        const tr = tbody.insertRow();
+        const td = tr.insertCell();
+        td.colSpan = 2;
+        td.innerText = 'No processes in 2000-6000';
+        td.style.textAlign = 'center';
+        return;
+      }
+
+      processes.forEach(group => {
+        if (!group.procs || !Array.isArray(group.procs)) return;
+
+        // Deduplicate PIDs
+        const pidMap = new Map();
+        group.procs.forEach(proc => {
+          if (!pidMap.has(proc.pid)) pidMap.set(proc.pid, proc);
+        });
+        const uniqueProcs = Array.from(pidMap.values());
+
+        const tr = tbody.insertRow();
+        tr.classList.add('port-row');
+        tr.insertCell().innerText = `Port ${group.port} (${uniqueProcs.length} process${uniqueProcs.length > 1 ? 'es' : ''})`;
+
+        const td = tr.insertCell();
+        uniqueProcs.forEach((proc, index) => {
+          const span = document.createElement('span');
+          span.innerText = `${proc.pid}`;
+
+          const btn = document.createElement('button');
+          btn.innerText = 'Kill';
+          btn.className = 'kill-btn';
+          btn.onclick = () => window.api.killProcess(proc.pid);
+
+          td.appendChild(span);
+          td.appendChild(btn);
+
+          if (index < uniqueProcs.length - 1) {
+            td.appendChild(document.createTextNode(' | '));
+          }
+        });
+      });
+    }
+
+    async function manualRefresh() {
+      if (!window.api || !window.api.manualRefresh) return;
+      const processes = await window.api.manualRefresh();
+      render(processes);
+    }
+
+    async function killAll() {
+      if (!window.api || !window.api.killAll) return;
+      await window.api.killAll();
+    }
+
+    // Auto-refresh from main process
+    if (window.api && window.api.onProcessUpdate) {
+      window.api.onProcessUpdate((processes) => render(processes));
+    }
+  </script>
+</body>
+</html>

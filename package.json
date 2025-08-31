@@ -1,0 +1,38 @@
+{
+  "name": "port-killer-monitor",
+  "version": "1.0.0",
+  "description": "This app monitors and kills processes on specified ports.",
+  "main": "main.js",
+  "scripts": {
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "start": "electron .",
+  "build:all": "electron-packager . \"Port Killer Monitor\" --platform=darwin,win32,linux --icon=./icons/app-icon --overwrite",
+  "build:ios": "electron-packager . \"Port Killer Monitor\" --platform=darwin --icon=./icons/app-icon.icns --overwrite",
+  "build:linux": "electron-packager . \"Port Killer Monitor\" --platform=linux --icon=./icons/app-icon.png --overwrite",
+  "build:windows": "electron-packager . \"Port Killer Monitor\" --platform=win32 --icon=./icons/app-icon.ico --overwrite"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "electron": "^37.4.0",
+    "find-process": "^2.0.0"
+  },
+  "devDependencies": {
+    "electron-packager": "^17.1.2"
+  },
+  "build": {
+    "appId": "com.portkillermonitor.app",
+    "productName": "Port Killer Monitor",
+    "win": {
+      "icon": "build/icons/app-icon.ico"
+    },
+    "mac": {
+      "icon": "build/icons/app-icon.icns"
+    },
+    "linux": {
+      "icon": "build/icons"
+    }
+  }
+}

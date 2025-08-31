@@ -1,0 +1,25 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+*.log
+*.tmp
+
+# Electron packaged apps
+Port Killer Monitor-*
+*.app
+*.exe
+*.dmg
+*.deb
+*.AppImage
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+
+# VSCode
+.vscode/
